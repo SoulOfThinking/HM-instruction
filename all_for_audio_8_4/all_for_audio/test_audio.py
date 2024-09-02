@@ -823,7 +823,7 @@ def record_audio(filename, duration):
         wf.setframerate(RATE)
         wf.writeframes(b''.join(frames))
 
-def pcm_to_wav(pcm_file_path,wav_file_path):
+def pcm_to_wav(pcm_file_path, wav_file_path):
     sample_rate = 16000  # 例如 16 kHz
     bit_depth = 16       # 例如 16-bit
 
