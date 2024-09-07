@@ -77,30 +77,7 @@ api_get_result = '/getResult'
 
 
 
-# 定义模式
-patterns = {
-    "停止": "停止|停下来|别动|不要|不",
-    "前进": "向前|前进|往前|走前面|前",
-    "后退": "向后|后退|往后|走后面|后",
-    "向左": "向左|往左|走左边|左",
-    "向右": "向右|往右|走右边|右",
-    "右转": "转右圈|右转一圈|右旋转|右绕圈|右转",
-    "左转": "转左圈|左转一圈|左旋转|左绕圈|左转",
-    "坐下": "坐下|坐下来|坐着|坐下去|趴下|坐|趴",
-    "站起来": "站起来|起立|站起|站起来|站",
-    "伸懒腰": "伸懒腰|伸展|拉伸|舒展|懒"
-}
 
-def map_sentence_to_command(sentence):
-    words = word_tokenize(sentence)
-    tagged_words = pos_tag(words)
-
-    for command, pattern in patterns.items():
-        for keyword in pattern.split("|"):
-            if keyword in sentence:
-                return command
-
-    return "未识别的指令"
 
 #def tts(text='testing'):
 #    engine=pyttsx3.init()
@@ -444,6 +421,9 @@ class get_result(object):
                 code = str(respData["code"])
                 if code!='0':
                     print("请前往https://www.xfyun.cn/document/error-code?code=" + code + "查询解决办法")
+
+
+
 class get_result_CtoE(object):
     def __init__(self,host,text):
         # 应用ID（到控制台获取）
@@ -581,7 +561,7 @@ def HighStateHandler(msg: SportModeState_):
 
 
 
-
+# 生成一个用于想讯飞api发起的websocket请求的url
 class Ws_Param(object):
     # 初始化
     def __init__(self, APPID, APIKey, APISecret, Text):
@@ -632,6 +612,7 @@ class Ws_Param(object):
         # print('websocket url :', url)
         return url
 
+# 在一个 WebSocket 连接中接收到消息后，处理从讯飞语音合成（TTS）API 返回的数据，并将合成的音频保存为一个 .pcm 音频文件
 def on_message(ws, message):
     try:
         message =json.loads(message)
@@ -687,6 +668,8 @@ def play_pcm(file_path, channels=1, rate=16000, width=2):
 
     # Terminate the PortAudio interface
     p.terminate()
+
+
 # 收到websocket连接建立的处理
 def on_open(ws):
     def run(*args):
@@ -738,6 +721,9 @@ def send_image_and_text(image_path, text, server_host='10.50.0.37', server_port=
         print(f"Error: {e}")
 
     client.close()
+
+
+# 上传音频文件并获取处理结果   
 class RequestApi(object):
     def __init__(self, appid, secret_key, upload_file_path):
         self.appid = appid
