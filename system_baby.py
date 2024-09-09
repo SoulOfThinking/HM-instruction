@@ -874,7 +874,7 @@ def listen_and_wake():
     
     ##############################
     while True:
-        play_wav_file("/media/smbu/handsome_boy/all_for_audio_8_7/all_for_audio_8_4/all_for_audio/1.wav")
+        play_wav_file("./SFX/1.wav")
         print("Listening for wake word...")
         record_audio(WAVE_OUTPUT_FILENAME, RECORD_SECONDS)
         recognized_text = main_fun(WAVE_OUTPUT_FILENAME)
@@ -883,100 +883,107 @@ def listen_and_wake():
         client.SetTimeout(3.0)
         client.Init()
 
+        #regin 唤醒代码，有问题，需重新考虑逻辑问题
 
-        if "你好" in recognized_text:
-            print("----------Wake word detected, starting recording...")
-            while True:
+        # if "你好" in recognized_text:
+        #     print("----------Wake word detected, starting recording...")
+        #     while True:
 
 
-                print("##################GetImageSample###################")
-                code, data = client.GetImageSample()
+        #         print("##################GetImageSample###################")
+        #         code, data = client.GetImageSample()
 
-                if code != 0:
-                    print("get image sample error. code:", code)
-                else:
-                    imageName = "/home/smbu/Desktop/temp.jpg"
-                imageName = "/home/smbu/Desktop/temp.jpg"
-                print("ImageName:", imageName)
+        #         if code != 0:
+        #             print("get image sample error. code:", code)
+        #         else:
+        #             imageName = "/home/smbu/Desktop/temp.jpg"
+        #         imageName = "/home/smbu/Desktop/temp.jpg"
+        #         print("ImageName:", imageName)
 
-                with open(imageName, "+wb") as f:
-                    f.write(bytes(data))
+        #         with open(imageName, "+wb") as f:
+        #             f.write(bytes(data))
 
-                time.sleep(1)
-                play_wav_file("2.wav")
-                record_audio(WAVE_OUTPUT_FILENAME, RECORD_SECONDS)
-                recognized_text = main_fun(WAVE_OUTPUT_FILENAME)
+        #         time.sleep(1)
+        #         play_wav_file("2.wav")
+
+        #         record_audio(WAVE_OUTPUT_FILENAME, RECORD_SECONDS)
+        #         recognized_text = main_fun(WAVE_OUTPUT_FILENAME)
               
-                print(f"2: {recognized_text}")
-                result_EN = send_image_and_text(image_path, recognized_text)
-                print(result_EN)
+        #         print(f"2: {recognized_text}")
+        #         result_EN = send_image_and_text(image_path, recognized_text)
+        #         print(result_EN)
                 
-                host = "itrans.xfyun.cn"
-                gClass=get_result(host,result_EN)
-                gClass.call_url()
-                result_cn = gClass.data['data']['result']['trans_result']['dst']
-                print(result_cn)
+        #         host = "itrans.xfyun.cn"
+        #         gClass=get_result(host,result_EN)
+        #         gClass.call_url()
+        #         result_cn = gClass.data['data']['result']['trans_result']['dst']
+        #         print(result_cn)
                 
-                wsParam1 = Ws_Param(APPID='3676e2d5', APISecret='MWVhMTUwZWRiZDhmNzhlNTlhNDdjOWM4',
-                       APIKey='ec07d0b6e326d00e50de170f34c43346',
-                       Text=result_cn)
-                wsParam = wsParam1
-                websocket.enableTrace(False)
-                wsUrl = wsParam1.create_url()
-                ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close)
-                ws.on_open = on_open
-                ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
-                play_pcm('demo.pcm')
-                # Here you can add the text-to-speech and other processing as needed
-                # xunfei_tts(recognized_text, TTS_OUTPUT_FILENAME)
-                # audio_player(TTS_OUTPUT_FILENAME)
+        #         wsParam1 = Ws_Param(APPID='3676e2d5', APISecret='MWVhMTUwZWRiZDhmNzhlNTlhNDdjOWM4',
+        #                APIKey='ec07d0b6e326d00e50de170f34c43346',
+        #                Text=result_cn)
+        #         wsParam = wsParam1
+        #         websocket.enableTrace(False)
+        #         wsUrl = wsParam1.create_url()
+        #         ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close)
+        #         ws.on_open = on_open
+        #         ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+        #         play_pcm('demo.pcm')
+        #         # Here you can add the text-to-speech and other processing as needed
+        #         # xunfei_tts(recognized_text, TTS_OUTPUT_FILENAME)
+        #         # audio_player(TTS_OUTPUT_FILENAME)
         
-                # 我的代码在下面改的
-        if "描述" in recognized_text or "看到" in recognized_text:
-            print("-----Start look forward------")
-            text = '描述一下图片'
+        #         # 我的代码在下面改的
+        #endregion
+
+        """
+        描述看到了什么
+        """
+        # if "描述" in recognized_text or "看到" in recognized_text:
+        #     print("-----Start look forward------")
+        #     text = '描述一下图片'
             
-            host = "itrans.xfyun.cn"
-            gClass_CtoE = get_result_CtoE(host,text)
-            gClass_CtoE.call_url()
-            print(gClass_CtoE.data['data']['result']['trans_result']['dst'])
+        #     host = "itrans.xfyun.cn"
+        #     gClass_CtoE = get_result_CtoE(host,text)
+        #     gClass_CtoE.call_url()
+        #     print(gClass_CtoE.data['data']['result']['trans_result']['dst'])
             
-            result_text = gClass_CtoE.data['data']['result']['trans_result']['dst']
+        #     result_text = gClass_CtoE.data['data']['result']['trans_result']['dst']
             
-            # paizhao
+        #     # paizhao
 
-            print("##################GetImageSample###################")
-            code, data = client.GetImageSample()
+        #     print("##################GetImageSample###################")
+        #     code, data = client.GetImageSample()
 
-            if code != 0:
-                print("get image sample error. code:", code)
-            else:
-                imageName = "/home/smbu/Desktop/temp.jpg"
-            imageName = "/home/smbu/Desktop/temp.jpg"
-            print("ImageName:", imageName)
+        #     if code != 0:
+        #         print("get image sample error. code:", code)
+        #     else:
+        #         imageName = "/home/smbu/Desktop/temp.jpg"
+        #     imageName = "/home/smbu/Desktop/temp.jpg"
+        #     print("ImageName:", imageName)
 
-            with open(imageName, "+wb") as f:
-                f.write(bytes(data))
+        #     with open(imageName, "+wb") as f:
+        #         f.write(bytes(data))
 
-            t = send_image_and_text(imageName, result_text)
+        #     t = send_image_and_text(imageName, result_text)
             
-            gClass=get_result(host,t)           # 转成汉字
-            gClass.call_url()
-            result_t = gClass.data['data']['result']['trans_result']['dst']
-            # 语音
-            wsParam2 = Ws_Param(APPID='d4e7815d', APISecret='YWUyNjliMzZhY2VjYWY1ZThhZjgyMjRh',APIKey='6a7c2610ac213fd66e2217213ffef7f1',Text=result_t)
-            wsParam = wsParam2
-            websocket.enableTrace(False)
-            wsUrl = wsParam.create_url()
-            ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close)
-            ws.on_open = on_open
-            ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+        #     gClass=get_result(host,t)           # 转成汉字
+        #     gClass.call_url()
+        #     result_t = gClass.data['data']['result']['trans_result']['dst']
+        #     # 语音
+        #     wsParam2 = Ws_Param(APPID='d4e7815d', APISecret='YWUyNjliMzZhY2VjYWY1ZThhZjgyMjRh',APIKey='6a7c2610ac213fd66e2217213ffef7f1',Text=result_t)
+        #     wsParam = wsParam2
+        #     websocket.enableTrace(False)
+        #     wsUrl = wsParam.create_url()
+        #     ws = websocket.WebSocketApp(wsUrl, on_message=on_message, on_error=on_error, on_close=on_close)
+        #     ws.on_open = on_open
+        #     ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
 
-            # 转成 wav文件
-            pcm_to_wav("demo.pcm",'output.wav')
+        #     # 转成 wav文件
+        #     pcm_to_wav("demo.pcm",'output.wav')
 
-            wav_file_path = 'output.wav'
-            play_wav_file(wav_file_path)
+        #     wav_file_path = 'output.wav'
+        #     play_wav_file(wav_file_path)
 
 
         #=====================================================================
