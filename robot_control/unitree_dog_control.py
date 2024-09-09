@@ -9,6 +9,9 @@ from unitree_sdk2py.go2.sport.sport_client import (
     PathPoint,
     SPORT_PATH_POINT_SIZE,
 )
+import threading
+import time
+
 
 
 def test_file():
