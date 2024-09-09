@@ -855,6 +855,7 @@ def listen_and_wake():
     global wsParam
     
     #robot control init
+    # 初始化信道，if代表了是否传入了信道参数，如果传入了，使用那个信道进行通信，如果没有传入，代码会自动选择一个合适的配置
     if len(sys.argv)>1:
         ChannelFactoryInitialize(0, sys.argv[1])
     else:
