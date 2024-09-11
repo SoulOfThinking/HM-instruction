@@ -16,6 +16,7 @@ patterns = {
     "伸懒腰": "伸懒腰|伸展|拉伸|舒展|懒"
 }
 
+
 def map_sentence_to_command(sentence):
     words = word_tokenize(sentence)
     tagged_words = pos_tag(words)
@@ -26,3 +27,39 @@ def map_sentence_to_command(sentence):
                 return command
 
     return "未识别的指令"
+
+def chinese_to_arabic(chinese_num):
+    chinese_digits = {
+        '零': 0, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
+        '六': 6, '七': 7, '八': 8, '九': 9
+    }
+    
+    chinese_units = {
+        '十': 10, '百': 100, '千': 1000, '万': 10000, '亿': 100000000
+    }
+
+    result = 0
+    temp_unit = 1  # 当前的单位值
+    temp_num = 0   # 当前的数字值
+
+    for char in reversed(chinese_num):
+        if char in chinese_digits:
+            temp_num = chinese_digits[char]
+        elif char in chinese_units:
+            unit_value = chinese_units[char]
+            if unit_value >= 10000:
+                result += temp_num * temp_unit
+                result *= unit_value
+                temp_unit = 1
+                temp_num = 0
+            else:
+                temp_unit = unit_value
+                result += temp_num * temp_unit
+                temp_num = 0
+
+    result += temp_num * temp_unit
+    return result
+
+# 示例
+print(chinese_to_arabic("一万二千三百四十五"))
+print(chinese_to_arabic("九亿八千万"))        
