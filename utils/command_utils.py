@@ -1,6 +1,7 @@
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag, RegexpParser
+import re
 
 # 定义模式
 patterns = {
@@ -16,7 +17,7 @@ patterns = {
     "伸懒腰": "伸懒腰|伸展|拉伸|舒展|懒"
 }
 
-
+# 提取语句中的命令
 def map_sentence_to_command(sentence):
     words = word_tokenize(sentence)
     tagged_words = pos_tag(words)
@@ -28,6 +29,7 @@ def map_sentence_to_command(sentence):
 
     return "未识别的指令"
 
+# 将中文数字转化为阿拉伯数字
 def chinese_to_arabic(chinese_num):
     chinese_digits = {
         '零': 0, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5,
@@ -37,29 +39,49 @@ def chinese_to_arabic(chinese_num):
     chinese_units = {
         '十': 10, '百': 100, '千': 1000, '万': 10000, '亿': 100000000
     }
-
+    
+    stack = []
     result = 0
     temp_unit = 1  # 当前的单位值
     temp_num = 0   # 当前的数字值
 
-    for char in reversed(chinese_num):
+    for char in chinese_num:
         if char in chinese_digits:
-            temp_num = chinese_digits[char]
-        elif char in chinese_units:
-            unit_value = chinese_units[char]
-            if unit_value >= 10000:
-                result += temp_num * temp_unit
-                result *= unit_value
-                temp_unit = 1
-                temp_num = 0
+            if len(stack) == 0: 
+                stack.append(chinese_digits[char]) 
             else:
-                temp_unit = unit_value
+                temp_num = stack.pop() 
                 result += temp_num * temp_unit
-                temp_num = 0
-
-    result += temp_num * temp_unit
+                temp_unit = 1
+                stack.append(chinese_digits[char])
+        elif char in chinese_units: # 如果是后面chinese units，就是要乘以倍数
+            unit_value = temp_unit * chinese_units[char] # 倍数
+            temp_unit = unit_value
+            
+            
+            # else:
+            #     temp_unit = unit_value
+            #     result += temp_num * temp_unit
+            #     temp_num = 0
+    if len(stack) != 0:
+        result = result + stack.pop() * temp_unit
+    
     return result
 
-# 示例
-print(chinese_to_arabic("一万二千三百四十五"))
-print(chinese_to_arabic("九亿八千万"))        
+# 从语句中提取中文数字
+def extract_chinese_numbers(text):
+    # 定义匹配连续中文数字的正则表达式
+    pattern = r'[零一二三四五六七八九十百千万亿]+'
+    
+    # 使用正则表达式查找所有连续的中文数字段
+    chinese_numbers = re.findall(pattern, text)
+    
+    # 返回匹配到的中文数字列表
+    return chinese_numbers
+
+# 示例语句
+# text = "今天我买了五十二个苹果，总共花了一千零一元。"
+# result = extract_chinese_numbers(text)
+# print("提取出的中文数字:", result)
+# print(chinese_to_arabic("一千零一"))
+        
